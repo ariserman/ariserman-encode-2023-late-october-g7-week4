@@ -1,0 +1,98 @@
+ <div class="px-4 py-5 my-5 text-center">
+  <h1 class="display-5 fw-bold">Tokenized Ballot App</h1>
+  <div class="col-lg-6 mx-auto">
+    <div *ngIf="!wallet" class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+      <button type="button" (click)="createWallet()" class="btn btn-success btn-lg px-4 gap-3">
+        Create Wallet
+      </button>
+      <button type="button" class="btn btn-info btn-lg px-4 gap-3" (click)="toggleImport(!importWalletDisplay)">
+        Import Wallet
+      </button>
+      <button disabled type="button" class="btn btn-danger btn-lg px-4 gap-3">
+        Connect Wallet
+      </button>
+    </div>
+
+    <div class="my-4" *ngIf="importWalletDisplay">
+      <input #walletPk type="text" class="form-control" placeholder="Wallet Private Key"/>
+      <button type="button" (click)="importWallet(walletPk.value)" class="btn btn-success btn-lg px-4 gap-3 my-4">
+        Connect
+      </button>
+    </div>
+
+    <div *ngIf="wallet">
+      <p>The token address is: {{tokenAddress}}</p>
+      <p>Your wallet address is: {{wallet.address}}</p>
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center my-4">
+        <div class="card">
+          <div class="card-body">
+            Your ETH balance is: {{ethBalance}}
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            Your token balance is: {{tokenBalance}}
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            Your voting power is: {{votePower}}
+          </div>
+        </div>
+      </div>
+      <input #amountTokens type="text" class="form-control" placeholder="Token Amount"/>
+      <button type="button" (click)="requestTokens(amountTokens.value)" class="btn btn-success btn-lg px-4 gap-3 my-4">
+        Request Tokens
+      </button>
+      <input #inputAddress type="text" class="form-control" placeholder="Paste your ballot address here"/>
+      <button type="button" (click)="connectBallot(inputAddress.value)" class="btn btn-success btn-lg px-4 gap-3 my-4">
+        Connect Ballot
+      </button>
+
+      <div *ngIf="ballotContract">
+        <p>Ballot address is: {{ballotAddress}}</p>
+        <p>Ballot voting power remaining is: {{ballotPower}}</p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center my-4">
+          <div class="card" *ngIf="ballots[0]">
+            <div class="card-body">
+              Option: {{ballots[0].proposal}}
+            </div>
+            <div class="card-body">
+              Current Votes: {{ballots[0].amount}}
+            </div>
+          </div>
+          <div class="card" *ngIf="ballots[1]">
+            <div class="card-body">
+              Option: {{ballots[1].proposal}}
+            </div>
+            <div class="card-body">
+              Current Votes: {{ballots[1].amount}}
+            </div>
+          </div>
+          <div class="card" *ngIf="ballots[2]">
+            <div class="card-body">
+              Option: {{ballots[2].proposal}}
+            </div>
+            <div class="card-body">
+              Current Votes: {{ballots[2].amount}}
+            </div>
+          </div>
+        </div>
+        <div *ngIf="ballots && ballots[2]">
+          <input #delegateVotes type="text" class="form-control my-4" placeholder="Self-Delegate To Account"/>
+          <button type="button" (click)="selfDelegate(delegateVotes.value)" class="btn btn-success btn-lg px-4 gap-3 my-4">
+            Self-Delegate
+          </button>
+          <input #voteOption type="text" class="form-control" placeholder="Vote Option"/>
+          <input #voteAmount type="text" class="form-control my-4" placeholder="Vote Amount"/>
+          <button type="button" disabled *ngIf="voteInProgress" (click)="vote(voteOption.value, voteAmount.value)" class="btn btn-success btn-lg px-4 gap-3 my-4">
+            Processing Vote
+          </button>
+          <button type="button" *ngIf="!voteInProgress" (click)="vote(voteOption.value, voteAmount.value)" class="btn btn-success btn-lg px-4 gap-3 my-4">
+            Vote
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
